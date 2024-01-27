@@ -5,6 +5,13 @@ from fastapi import FastAPI
 from fastapi import WebSocket
 from fastapi.responses import HTMLResponse
 
+from google.cloud import firestore
+
+# The `project` parameter is optional and represents which project the client
+# will act on behalf of. If not supplied, the client falls back to the default
+# project inferred from the environment.
+db = firestore.Client(project="jillbox-407119")
+
 app = FastAPI()
 
 
@@ -57,6 +64,8 @@ html = """
 
 @app.get("/chat")
 async def get():
+    doc_ref = db.collection("users").document("alovelace")
+    doc_ref.set({"first": "Ada", "last": "Lovelace", "born": 1815})
     return HTMLResponse(html)
 
 
